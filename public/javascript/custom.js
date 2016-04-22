@@ -1,0 +1,1 @@
+$('#btnSearchSeries').click(function() {});
