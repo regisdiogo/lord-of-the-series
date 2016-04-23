@@ -2,14 +2,20 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var handlebars = require('express-handlebars');
-//https://www.npmjs.com/package/body-parser - Will I use Body Parser?
+var bodyParser = require('body-parser')
 
 var app = express();
 
+// View
 app.engine('handlebars', handlebars({
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));

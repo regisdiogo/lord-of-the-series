@@ -18,12 +18,13 @@
   },
   "homepage": "https://github.com/regisdiogo/lord-of-the-series#readme",
   "dependencies": {
-    "cheerio": "^0.20.0",
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "request": "^2.72.0",
-    "xml2js": "^0.4.16"
+    "xml2js": "~0.4.16",
+    "body-parser": "~1.15.0",
+    "mongoose": "~4.4.13"
   }
 }
