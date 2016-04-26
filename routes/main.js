@@ -1,7 +1,5 @@
 var express = require('express');
-var request = require('request');
-var parseString = require('xml2js').parseString;
-var config = require('../config.js');
+var series = require('../business/series.js');
 
 var router = express.Router();
 
@@ -11,19 +9,16 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/series', function(req, res) {
-    var url = config.thetvdb.searchByName + req.body.seriesTitle;
-    request(url, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            parseString(body, function(err, result) {
-                console.log(result.Data.Series);
-                res.render('series', {
-                    title: 'Series',
-                    list: result.Data.Series
-                });
-            });
+router.post('/series/search', function(req, res) {
+    series.getSeriesByName(req.body.seriesTitle, function(success, response) {
+        if (success) {
+            res.json(response);
+        } else {
+            res.json(204, response);
         }
     });
 });
+
+//router.get('/series/:id/')
 
 module.exports = router;

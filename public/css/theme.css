@@ -24,3 +24,11 @@ body {
 .searchSeries > button[type="submit"] {
     margin-top: 10px;
 }
+
+#searchResults {
+    margin-top: 10px;
+}
+
+#searchResults .table tr td {
+    cursor: pointer;
+}
