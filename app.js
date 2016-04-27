@@ -1,8 +1,12 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var handlebars = require('express-handlebars');
-var bodyParser = require('body-parser')
+global.require = function(name) {
+    return require(__dirname + '/' + name);
+}
+
+var express = require.main.require('express');
+var path = require.main.require('path');
+var logger = require.main.require('morgan');
+var handlebars = require.main.require('express-handlebars');
+var bodyParser = require.main.require('body-parser')
 
 var app = express();
 
@@ -39,5 +43,5 @@ app.use(function(req, res, next) {
 
 //Listening
 app.listen(3000, function() {
-    console.log('Example app listening on port 3000!');
+    console.log('Ready to go on port 3000!');
 });

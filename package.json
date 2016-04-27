@@ -4,7 +4,7 @@
   "description": "One Place to rule them all, One Place to find them...",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_PATH=lib node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,7 +24,6 @@
     "mongoose": "~4.4.13",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
-    "querystring": "^0.2.0",
     "request": "^2.72.0"
   }
 }

@@ -1,5 +1,5 @@
-var express = require('express');
-var series = require('../business/series.js');
+var express = require.main.require('express');
+var series = require.main.require('./lib/business/series');
 
 var router = express.Router();
 
@@ -10,15 +10,20 @@ router.get('/', function(req, res) {
 });
 
 router.post('/series/search', function(req, res) {
-    series.getSeriesByName(req.body.seriesTitle, function(success, response) {
-        if (success) {
+    var callback = function(error, response) {
+        if (!error) {
             res.json(response);
         } else {
-            res.json(204, response);
+            res.status(204).json(response);
         }
-    });
+    };
+    series.getSeriesByName(req.body.seriesTitle, callback);
 });
 
-//router.get('/series/:id/')
+router.get('/series/:id/', function(req, res) {
+    var callback = function(error, response) {
+
+    }
+});
 
 module.exports = router;
