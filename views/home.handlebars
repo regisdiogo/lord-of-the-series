@@ -1,21 +1,38 @@
-<h1>Welcome to Lord of The Series</h1>
-<p>One Place to rule them all, One Place to find them... One Place to ensure you never miss an episode of your favorite TV Series.</p>
+<div id="home-page" class="main-area">
+    <h1>Welcome to Lord of The Series</h1>
+    <p>One Place to rule them all, One Place to find them... One Place to ensure you never miss an episode of your favorite TV Series.</p>
 
-<div class="alert alert-danger" id="error" role="alert" style="display:none;"></div>
+    <div class="alert alert-danger" id="error" role="alert" style="display:none;"></div>
 
-<form class="searchSeries">
-    <input type="text" id="seriesTitle" name="seriesTitle" class="form-control" placeholder="Series title" required autofocus>
+    <form class="searchSeries">
+        <input type="text" id="seriesTitle" name="seriesTitle" class="form-control" placeholder="Series title" required autofocus>
+        <button class="btn btn-lg btn-primary" id="btnSearchSeries" type="submit">Search</button>
+    </form>
 
-    <button class="btn btn-lg btn-primary" id="btnSearchSeries" type="submit">Search</button>
-</form>
+    <div id="searchResults" class="hidden-area">
+        <table class="table table-hover">
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Overview</th>
+            </tr>
+        </table>
+    </div>
+</div>
 
-<div id="searchResults" style="display:none;">
-    <table class="table table-hover">
-        <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Overview</th>
-        </tr>
-    </table>
+<div id="series-detail" class="main-area">
+    <img class="banner" />
+    <dl class="dl-horizontal">
+        <dt>Series Name</dt>
+        <dd class="seriesName"></dd>
+        <dt>Status</dt>
+        <dd class="status"></dd>
+        <dt>Genre</dt>
+        <dd class="genre"></dd>
+        <dt>Overview</dt>
+        <dd class="overview"></dd>
+    </dl>
+    <button class="btn btn-default go-back" type="submit">Go back</button>
+    <button class="btn btn-default" type="submit">Add to your collection</button>
 </div>

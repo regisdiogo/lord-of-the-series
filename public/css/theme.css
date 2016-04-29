@@ -32,3 +32,21 @@ body {
 #searchResults .table tr td {
     cursor: pointer;
 }
+
+#language-selector {
+    float: right;
+    position: relative;
+    margin-top: 9px;
+}
+
+#series-detail {
+    width: 800px;
+}
+
+#series-detail dl {
+    margin-top: 20px;
+}
+
+.hidden-area {
+    display: none;
+}
