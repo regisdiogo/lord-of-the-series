@@ -39,14 +39,25 @@ body {
     margin-top: 9px;
 }
 
-#series-detail {
-    width: 800px;
-}
-
-#series-detail dl {
-    margin-top: 20px;
-}
-
 .hidden-area {
     display: none;
+}
+
+#loading-bar {
+    top: 0;
+    float: left;
+    width: 100%;
+    position: absolute;
+    box-sizing: border-box;
+}
+
+#loading-bar .nanobar {
+    margin-bottom: 2em;
+}
+
+#loading-bar .nanobar .bar {
+    background: #38f;
+    border-radius: 4px;
+    box-shadow: 0 0 5px #59d;
+    height: 2px;
 }
