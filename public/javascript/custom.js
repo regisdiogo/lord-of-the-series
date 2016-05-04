@@ -159,10 +159,6 @@ app.events.selectLanguage = function() {
     }
 };
 
-app.events.goBack = function() {
-    console.log('app.events.goBack');
-};
-
 $(window).on('hashchange', function() {
     console.log('$(window).on(hashchange)');
     app.methods.renderPage(decodeURI(window.location.hash));

@@ -3,61 +3,10 @@ body {
     padding-bottom: 30px;
 }
 
-.theme-dropdown .dropdown-menu {
-    position: static;
-    display: block;
-    margin-bottom: 20px;
-}
-
-.theme-showcase > p > .btn {
-    margin: 5px 0;
-}
-
-.theme-showcase .navbar .container {
-    width: auto;
-}
-
-.searchSeries {
-    width: 400px;
-}
-
-.searchSeries > button[type="submit"] {
-    margin-top: 10px;
-}
-
-#searchResults {
-    margin-top: 10px;
-}
-
-#searchResults .table tr td {
+.show-pointer {
     cursor: pointer;
-}
-
-#language-selector {
-    float: right;
-    position: relative;
-    margin-top: 9px;
 }
 
 .hidden-area {
     display: none;
-}
-
-#loading-bar {
-    top: 0;
-    float: left;
-    width: 100%;
-    position: absolute;
-    box-sizing: border-box;
-}
-
-#loading-bar .nanobar {
-    margin-bottom: 2em;
-}
-
-#loading-bar .nanobar .bar {
-    background: #38f;
-    border-radius: 4px;
-    box-shadow: 0 0 5px #59d;
-    height: 2px;
 }
