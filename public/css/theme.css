@@ -7,6 +7,12 @@ body {
     cursor: pointer;
 }
 
-.hidden-area {
+.main-area {
     display: none;
+}
+
+.error-label {
+    margin-right: 15px;
+    position: absolute;
+    right: 0;
 }

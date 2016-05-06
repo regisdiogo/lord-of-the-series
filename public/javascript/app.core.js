@@ -1,47 +1,124 @@
 var app = {};
 app.methods = {};
+app.core = {};
+
+app.core.doPost = function(url, data, callback) {
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: data
+
+    }).done(function(data) {
+        callback(false, data);
+
+    }).error(function(data) {
+        if (data.responseJSON) {
+            $.each(data.responseJSON, function() {
+                $.each(this, function(field, message) {
+                    $('[name=' + field + ']').before($('<span />').addClass('label label-danger error-label').html(message));
+                });
+            });
+            callback(data.responseJSON[0]);
+        } else {
+            callback(data);
+        }
+    });
+};
 
 app.methods.getCurrentUser = function() {
     $.ajax({
         type: 'GET',
         url: 'user/'
 
-    }).done(function(data, statusText, xhr) {
+    }).done(function(data) {
 
 
-    }).error(function(error) {
-        if (error.status == 401) {
-            console.log("Show login");
+    }).error(function(data) {
+        if (data.status == 401) {
+            window.location = '#login'
         } else {
-            console.error(error);
+            console.error(data);
         }
     });
 };
 
+app.methods.login = function() {
+    console.debug('app.methods.login');
+    $('.error-label').remove();
+    var callback = function(error, data) {
+        if (error)
+            console.debug(error);
+        else
+            console.debug(data);
+    }
+    app.core.doPost('user/login', $('#login-page').find('form').serialize(), callback);
+};
+
+app.methods.signup = function() {
+    console.debug('app.methods.signup');
+    $('.error-label').remove();
+    var callback = function(error, data) {
+        if (error)
+            console.debug(error);
+        else
+            console.debug(data);
+    }
+    app.core.doPost('user/signup', $('#signup-page').find('form').serialize(), callback);
+};
+
 app.events = {
     'main-title': function() {
-        console.log('app.events.main-title');
+        console.debug('app.events.main-title');
+        window.location = '#';
     },
 
-    'do-login': function() {
-        console.log('app.events.do-login');
+    'show-login': function() {
+        console.debug('app.events.show-login');
+        window.location = '#login';
+    },
+
+    'login': function() {
+        console.debug('app.events.login');
+        app.methods.login();
     },
 
     'show-signup': function() {
-        console.log('app.events.show-signup');
+        console.debug('app.events.show-signup');
+        window.location = '#signup'
+    },
+
+    'signup': function() {
+        console.debug('app.events.signup');
+        app.methods.signup();
     }
 };
 
 app.render = function(url) {
-    console.log('app.render(\'' + url + '\')');
-    app.methods.getCurrentUser();
+    console.debug('app.render(\'' + url + '\')');
     var params = url.split('/');
+
     var map = {
-        '': function() {},
+        '': function() {
+            app.methods.getCurrentUser();
+        },
 
-        '#search': function() {},
+        '#login': function() {
+            $('.main-area').hide();
+            $('#login-page').show().find('input').first().focus();
+        },
 
-        '#series': function() {}
+        '#signup': function() {
+            $('.main-area').hide();
+            $('#signup-page').show().find('input').first().focus();
+        },
+
+        '#search': function() {
+            app.methods.getCurrentUser();
+        },
+
+        '#series': function() {
+            app.methods.getCurrentUser();
+        }
     };
 
     if (map[params[0]]) {
@@ -56,13 +133,19 @@ $(window).on('hashchange', function() {
 });
 
 $(document).ready(function() {
-    $('.app-control').click(function() {
-        if (app.events[$(this).attr('data-event')]) {
-            app.events[$(this).attr('data-event')]();
+    var eventsFunc = function(obj) {
+        if (app.events[obj.attr('data-event')]) {
+            app.events[obj.attr('data-event')]();
         } else {
-            console.error('404 Event: ' + $(this).attr('data-event'));
+            console.error('404 Event: ' + obj.attr('data-event'));
         }
         return false;
+    };
+    $('.app-control').click(function() {
+        return eventsFunc($(this));
     });
-    window.location = '#';
+    $('.app-control-submit').submit(function() {
+        return eventsFunc($(this));
+    });
+    app.render(decodeURI(window.location.hash));
 });

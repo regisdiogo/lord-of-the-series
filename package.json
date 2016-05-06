@@ -4,7 +4,7 @@
   "description": "One Place to rule them all, One Place to find them...",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_PATH=lib node app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
