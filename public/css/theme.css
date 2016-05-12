@@ -16,3 +16,19 @@ body {
     position: absolute;
     right: 0;
 }
+
+#language-selector {
+    float: right;
+    padding-top: 13px;
+}
+
+#language-selector a,
+a:visited,
+a:active {
+    color: #9d9d9d;
+}
+
+#language-selector a:hover {
+    color: #eee;
+    text-decoration: underline;
+}

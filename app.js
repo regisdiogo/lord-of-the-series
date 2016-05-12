@@ -1,4 +1,4 @@
-global.require = function(name) {
+global.require = function (name) {
     return require(__dirname + '/' + name);
 }
 
@@ -16,34 +16,29 @@ var app = express();
 mongoose.connect('mongodb://localhost/lord-of-the-series');
 
 // View
-app.engine('handlebars', handlebars({
-    defaultLayout: 'main'
-}));
+app.engine('handlebars', handlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
 // Session
 app.use(session({
     secret: 'foobar',
     name: 'lord-of-the-series',
-    store: new mongoStore({
-        mongooseConnection: mongoose.connection
-    }),
+    store: new mongoStore({ mongooseConnection: mongoose.connection }),
     resave: true,
     saveUninitialized: true
 }));
 
 // Configs
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Check authentication
-app.all('*', function(req, res, next) {
-    var allowed = ['/', '/user/login', '/user/signup'];
-    if (allowed.indexOf(req.url) === -1 && req.session.userToken === undefined) {
+app.all('*', function (req, res, next) {
+    var allowed = ['/', '/user/', '/user/login', '/user/signup'];
+    console.log(req.session.user);
+    if (allowed.indexOf(req.url) === -1 && req.session.user === undefined) {
         res.status(401).json();
     } else {
         next();
@@ -56,22 +51,18 @@ app.use('/series', require.main.require('./routes/series'));
 app.use('/user', require.main.require('./routes/user'));
 
 //404
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.status(404);
     if (req.accepts('html')) {
-        res.render('404', {
-            title: '404 Not Found'
-        });
+        res.render('404', { title: '404 Not Found' });
     } else if (req.accepts('json')) {
-        res.send({
-            error: 'Not found'
-        });
+        res.send({ error: 'Not found' });
     } else {
         res.type('txt').send('Not found');
     }
 });
 
 //Start server
-app.listen(3000, function() {
+app.listen(3000, function () {
     console.log('Ready to go on port 3000!');
 });
