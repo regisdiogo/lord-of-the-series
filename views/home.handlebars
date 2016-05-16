@@ -1,7 +1,7 @@
 <div id="login-page" class="main-area">
     <fieldset>
         <legend>Login page</legend>
-        <form class="form-horizontal app-control-submit" data-event="login" role="form">
+        <form class="form-horizontal app-control" data-event="login" role="form">
             <div class="form-group">
                 <label for="email" class="col-lg-2 control-label">E-mail</label>
                 <div class="col-lg-5">
@@ -27,7 +27,7 @@
 <div id="signup-page" class="main-area">
     <fieldset>
         <legend>Signup page</legend>
-        <form class="form-horizontal app-control-submit" data-event="signup" role="form">
+        <form class="form-horizontal app-control" data-event="signup" role="form">
             <div class="form-group">
                 <label for="email" class="col-lg-2 control-label">E-mail</label>
                 <div class="col-lg-5">
@@ -57,26 +57,34 @@
 </div>
 
 <div id="home-page" class="main-area">
-    <h1>Lord of The Series</h1>
-    <p>One Place to rule them all, One Place to find them... One Place to ensure you never miss an episode of your favorite TV Series.</p>
-
-    <div class="alert alert-danger" id="error" role="alert" style="display:none;"></div>
-
-    <form class="searchSeries">
-        <input type="text" id="seriesTitle" name="seriesTitle" class="form-control" placeholder="Series title" required autofocus>
-        <button class="btn btn-lg btn-primary" id="btnSearchSeries" type="submit">Search</button>
-    </form>
-
-    <div id="searchResults">
-        <table class="table table-hover">
-            <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Overview</th>
-            </tr>
-        </table>
-    </div>
+    <fieldset>
+        <legend>Lord of The Series</legend>
+        <p>One Place to rule them all, One Place to find them... One Place to ensure you never miss an episode of your favorite TV Series.</p>
+        <form class="form-horizontal app-control" data-event="login" role="form">
+            <div class="alert alert-danger" id="error" role="alert" style="display:none;"></div>
+            <div class="form-group">
+                <label for="seriesTitle" class="col-lg-2 control-label">Series title</label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" id="seriesTitle" name="seriesTitle" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10">
+                    <button type="submit" class="btn btn-primary app-control" data-event="search-series">Search</button>
+                </div>
+            </div>
+        </form>
+        <div id="search-results">
+            <table class="table table-hover">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Overview</th>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
 </div>
 
 <div id="series-detail" class="modal fade" tabindex="-1" role="dialog">

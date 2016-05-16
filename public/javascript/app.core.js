@@ -3,7 +3,34 @@ app.methods = {};
 app.core = {};
 app.params = {};
 
+app.params.language = 'en';
+app.params.title = 'Lord of The Series';
+
+app.core.bindEvents = function () {
+    var eventsFunc = function (obj) {
+        if (app.events[obj.attr('data-event')]) {
+            app.events[obj.attr('data-event')](obj.attr('data-param'));
+        } else {
+            console.error('404 Event: ' + obj.attr('data-event'));
+        }
+        return false;
+    };
+
+    $('.app-control').each(function () {
+        if ($(this).is('form')) {
+            $(this).unbind('submit').bind('submit', function () {
+                return eventsFunc($(this))
+            });
+        } else {
+            $(this).unbind('click').bind('click', function () {
+                return eventsFunc($(this))
+            });
+        }
+    });
+};
+
 app.core.doPost = function (url, data, callback) {
+    $('button').button('loading');
     $.ajax({
         type: 'POST',
         url: url,
@@ -11,6 +38,7 @@ app.core.doPost = function (url, data, callback) {
 
     }).done(function (data) {
         callback(false, data);
+        $('button').button('reset');
 
     }).error(function (data) {
         if (data.responseJSON) {
@@ -23,21 +51,79 @@ app.core.doPost = function (url, data, callback) {
         } else {
             callback(data);
         }
+        $('button').button('reset');
     });
 };
 
-
 app.core.doGet = function (url, callback) {
+    $('button').button('loading');
     $.ajax({
         type: 'GET',
         url: url
 
     }).done(function (data) {
-        callback(data);
+        callback(false, data);
+        $('button').button('reset');
 
     }).error(function (data) {
-        callback(false, data);
+        callback(data);
+        $('button').button('reset');
     });
+};
+
+app.methods.convertToSlug = function (text) {
+    return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+};
+
+app.methods.search = function (query) {
+    var callback = function (error, response) {
+        if (error) {
+            console.log(error);
+        } else {
+            $('.main-area').hide();
+            $('#home-page').show().find('input').first().focus();
+            $('#search-results .table tr').children(':not(th)').parent().remove();
+            if (response.status == 204) {
+                $('#error').html('No results found').show();
+            } else {
+                var result = response.data;
+                for (var i = 0; i < result.length; i++) {
+                    $('#search-results .table').append('<tr class="table-row app-control" data-event="table-row-click" data-param="' + result[i].id + '/' + app.methods.convertToSlug(result[i].seriesName) + '">' +
+                        '<td>' + result[i].id + '</td>' +
+                        '<td>' + result[i].seriesName + '</td>' +
+                        '<td>' + result[i].status + '</td>' +
+                        '<td>' + result[i].overview + '</td>' +
+                        '</tr>');
+                };
+                app.core.bindEvents();
+                $('#search-results').show();
+            }
+        }
+    }
+    var data = {
+        'seriesTitle': query,
+        'language': app.params.language
+    }
+    app.core.doPost('/series/search', $.param(data), callback);
+};
+
+app.methods.seriesDetail = function (id) {
+    var callback = function (error, response) {
+        if (error) {
+            console.log(error);
+        } else {
+            $.each(response.data, function (key, value) {
+                var $obj = $('#series-detail').find('.' + key);
+                if ($obj.is('img')) {
+                    $obj.attr('src', 'http://thetvdb.com/banners/' + value);
+                } else {
+                    $obj.html(value);
+                }
+            });
+            $('#series-detail').modal('show');
+        }
+    }
+    app.core.doGet('/series/' + app.params.language + '/' + id, callback);
 };
 
 app.methods.getCurrentUser = function (callback) {
@@ -45,8 +131,12 @@ app.methods.getCurrentUser = function (callback) {
         return callback();
     }
     var internalCallback = function (error, data) {
-        if (data.status == 401) {
-            window.location = '#login'
+        if (error) {
+            if (error.status == 401) {
+                window.location = '#login'
+            } else {
+                console.error(error);
+            }
         } else {
             app.params.user = data;
             callback();
@@ -120,6 +210,16 @@ app.events = {
     'signup': function () {
         console.debug('app.events.signup');
         app.methods.signup();
+    },
+
+    'search-series': function () {
+        console.debug('app.events.search-series');
+        window.location = '#search-series/q=' + encodeURIComponent($('#seriesTitle').val());
+    },
+
+    'table-row-click': function (param) {
+        console.debug('app.events.table-row-click');
+        window.location = '#series/' + param;
     }
 };
 
@@ -139,6 +239,7 @@ app.render = function (url) {
         '#login': function () {
             $('.main-area').hide();
             $('#login-page').show().find('input').first().focus();
+            $('head title').html('Login - ' + app.params.title);
         },
 
         '#logout': function () {
@@ -148,22 +249,27 @@ app.render = function (url) {
         '#signup': function () {
             $('.main-area').hide();
             $('#signup-page').show().find('input').first().focus();
+            $('head title').html('Signup - ' + app.params.title);
         },
 
         '#home': function () {
             var callback = function () {
+                $('.form-group').find('input').val('');
                 $('.main-area').hide();
                 $('#home-page').show().find('input').first().focus();
             };
             app.methods.getCurrentUser(callback);
+            $('head title').html('Search - ' + app.params.title);
         },
 
-        '#search': function () {
-            app.methods.getCurrentUser();
+        '#search-series': function () {
+            app.methods.getCurrentUser(function () { });
+            app.methods.search(params[1].substring(2));
         },
 
         '#series': function () {
-            app.methods.getCurrentUser();
+            app.methods.getCurrentUser(function () { });
+            app.methods.seriesDetail(params[1]);
         }
     };
 
@@ -183,22 +289,6 @@ $(window).on('hashchange', function () {
 });
 
 $(document).ready(function () {
-    var eventsFunc = function (obj) {
-        if (app.events[obj.attr('data-event')]) {
-            app.events[obj.attr('data-event')]();
-        } else {
-            console.error('404 Event: ' + obj.attr('data-event'));
-        }
-        return false;
-    };
-
-    $('.app-control').click(function () {
-        return eventsFunc($(this));
-    });
-
-    $('.app-control-submit').submit(function () {
-        return eventsFunc($(this));
-    });
-
+    app.core.bindEvents();
     app.render(decodeURI(window.location.hash));
 });

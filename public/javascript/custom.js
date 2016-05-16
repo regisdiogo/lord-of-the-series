@@ -7,25 +7,25 @@ app.methods = {};
 app.params.selectedLanguage = 'en';
 app.params.lastPage = '#';
 
-app.methods.renderPage = function(url) {
+app.methods.renderPage = function (url) {
     console.log('app.methods.renderPage(' + url + ')');
     var params = url.split('/');
     var map = {
-        '': function() {
+        '': function () {
             app.methods.resetPage(true);
             $('.main-area').addClass('hidden-area');
             $('#home-page').removeClass('hidden-area');
         },
-        '#search': function() {
-            app.methods.searchSeries(params[1].split('=')[1], function() {
+        '#search': function () {
+            app.methods.searchSeries(params[1].split('=')[1], function () {
                 $('.tableRow').click(app.events.tableRowClick);
                 $('#searchResults').show();
                 $('.main-area').addClass('hidden-area');
                 $('#home-page').removeClass('hidden-area');
             });
         },
-        '#series': function() {
-            app.methods.seriesDetail(params[1], function() {
+        '#series': function () {
+            app.methods.seriesDetail(params[1], function () {
                 //$('.main-area').addClass('hidden-area');
                 //$('#series-detail').removeClass('hidden-area');
             });
@@ -39,7 +39,7 @@ app.methods.renderPage = function(url) {
     }
 };
 
-app.methods.resetPage = function(resetInput) {
+app.methods.resetPage = function (resetInput) {
     if (resetInput) {
         $('.searchSeries input').val('');
     }
@@ -50,17 +50,17 @@ app.methods.resetPage = function(resetInput) {
     $('#searchResults .table tr').children(':not(th)').parent().remove();
 };
 
-app.methods.convertToSlug = function(text) {
+app.methods.convertToSlug = function (text) {
     return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
 };
 
-app.methods.getAvailableLanguages = function() {
+app.methods.getAvailableLanguages = function () {
     console.log('app.methods.getAvailableLanguages');
     $.ajax({
         type: 'GET',
         url: 'languages'
 
-    }).done(function(data, statusText, xhr) {
+    }).done(function (data, statusText, xhr) {
         if (xhr.status == 500) {
             console.error(data);
         } else {
@@ -74,12 +74,12 @@ app.methods.getAvailableLanguages = function() {
             }
         }
 
-    }).error(function(error) {
+    }).error(function (error) {
         console.log(error);
     });
 };
 
-app.methods.searchSeries = function(query, callback) {
+app.methods.searchSeries = function (query, callback) {
     console.log('app.methods.searchSeries(' + query + ')');
     app.methods.resetPage(false);
     var $btn = $('#btnSearchSeries').button('loading');
@@ -88,7 +88,7 @@ app.methods.searchSeries = function(query, callback) {
         url: 'series/search',
         data: "seriesTitle=" + query + '&language=' + app.params.selectedLanguage
 
-    }).done(function(data, statusText, xhr) {
+    }).done(function (data, statusText, xhr) {
         $btn.button('reset');
         if (xhr.status == 204) {
             $('#error').html('No results found').show();
@@ -105,23 +105,23 @@ app.methods.searchSeries = function(query, callback) {
             callback();
         }
 
-    }).error(function(error) {
+    }).error(function (error) {
         $btn.button('reset');
         console.log(error);
     });
 };
 
-app.methods.seriesDetail = function(id, callback) {
+app.methods.seriesDetail = function (id, callback) {
     console.log('app.methods.seriesDetail(' + id + ')');
     $.ajax({
         type: 'GET',
         url: 'series/' + app.params.selectedLanguage + '/' + id
 
-    }).done(function(data, statusText, xhr) {
+    }).done(function (data, statusText, xhr) {
         if (xhr.status == 500) {
             console.error(data);
         } else {
-            $.each(data.data, function(key, value) {
+            $.each(data.data, function (key, value) {
                 var $obj = $('#series-detail').find('.' + key);
                 if ($obj.is('img')) {
                     $obj.attr('src', 'http://thetvdb.com/banners/' + value);
@@ -133,25 +133,25 @@ app.methods.seriesDetail = function(id, callback) {
             callback();
         }
 
-    }).error(function(error) {
+    }).error(function (error) {
         console.log(error);
     });
 };
 
-app.events.searchSeries = function() {
+app.events.searchSeries = function () {
     console.log('app.events.searchSeries');
     app.params.lastPage = window.location.href;
     window.location = '#search/q=' + $(this).children('#seriesTitle').val();
     return false;
 };
 
-app.events.tableRowClick = function() {
+app.events.tableRowClick = function () {
     console.log('app.events.tableRowClick');
     app.params.lastPage = window.location.href;
     window.location = '#series/' + $(this).attr('data');
 };
 
-app.events.selectLanguage = function() {
+app.events.selectLanguage = function () {
     console.log('app.events.selectLanguage');
     if ($(this).val() != '') {
         app.params.selectedLanguage = $(this).val();
@@ -159,16 +159,16 @@ app.events.selectLanguage = function() {
     }
 };
 
-$(window).on('hashchange', function() {
+$(window).on('hashchange', function () {
     console.log('$(window).on(hashchange)');
     app.methods.renderPage(decodeURI(window.location.hash));
 });
 
-$('#series-detail').on('hidden.bs.modal', function(e) {
+$('#series-detail').on('hidden.bs.modal', function (e) {
     window.location = app.params.lastPage;
 })
 
-$(document).ready(function() {
+$(document).ready(function () {
     console.log('$(document).ready');
     $('.searchSeries').submit(app.events.searchSeries);
     $('#select-language').change(app.events.selectLanguage);

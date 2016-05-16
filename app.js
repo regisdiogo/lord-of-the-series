@@ -37,7 +37,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Check authentication
 app.all('*', function (req, res, next) {
     var allowed = ['/', '/user/', '/user/login', '/user/signup'];
-    console.log(req.session.user);
     if (allowed.indexOf(req.url) === -1 && req.session.user === undefined) {
         res.status(401).json();
     } else {
