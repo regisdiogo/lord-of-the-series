@@ -24,4 +24,26 @@ router.get('/:language/:id', function (req, res) {
     series.getSeriesById(req.params, callback);
 });
 
+router.get('/:language/:id/summary', function (req, res) {
+    var callback = function (error, response) {
+        if (error) {
+            res.status(500).json(response);
+        } else {
+            res.json(response);
+        }
+    }
+    series.getEpisodesSummary(req.params.id, req.params.language, callback);
+});
+
+router.get('/:language/:id/seasons', function (req, res) {
+    var callback = function (error, response) {
+        if (error) {
+            res.status(500).json(response);
+        } else {
+            res.json(response);
+        }
+    }
+    series.getSeasonDetail(req.params.id, req.params.seasonId, req.params.language, callback);
+});
+
 module.exports = router;
