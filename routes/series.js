@@ -2,8 +2,8 @@ var express = require.main.require('express');
 var series = require.main.require('./lib/business/series');
 var router = express.Router();
 
-router.post('/search', function (req, res) {
-    var callback = function (error, response) {
+router.post('/search', function(req, res) {
+    var callback = function(error, response) {
         if (error) {
             res.status(204).json(response);
         } else {
@@ -13,8 +13,8 @@ router.post('/search', function (req, res) {
     series.searchSeriesByName(req.body, callback);
 });
 
-router.get('/:language/:id', function (req, res) {
-    var callback = function (error, response) {
+router.get('/:language/:id', function(req, res) {
+    var callback = function(error, response) {
         if (error) {
             res.status(500).json(response);
         } else {
@@ -24,8 +24,8 @@ router.get('/:language/:id', function (req, res) {
     series.getSeriesById(req.params, callback);
 });
 
-router.get('/:language/:id/summary', function (req, res) {
-    var callback = function (error, response) {
+router.get('/:language/:id/seasons', function(req, res) {
+    var callback = function(error, response) {
         if (error) {
             res.status(500).json(response);
         } else {
@@ -35,8 +35,8 @@ router.get('/:language/:id/summary', function (req, res) {
     series.getEpisodesSummary(req.params.id, req.params.language, callback);
 });
 
-router.get('/:language/:id/season/:seasonNumber', function (req, res) {
-    var callback = function (error, response) {
+router.get('/:language/:id/season/:seasonNumber', function(req, res) {
+    var callback = function(error, response) {
         if (error) {
             res.status(500).json(response);
         } else {
