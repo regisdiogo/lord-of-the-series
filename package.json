@@ -23,6 +23,7 @@
     "express": "^4.13.4",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.13.0",
+    "moment": "^2.13.0",
     "mongoose": "~4.4.13",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
