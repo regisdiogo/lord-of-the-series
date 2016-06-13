@@ -2,11 +2,20 @@ var app = {};
 app.methods = {};
 app.core = {};
 app.params = {};
+app.util = {};
 
 app.params.language = 'en';
 app.params.title = 'Lord of The Series';
 
 app.core.locked = false;
+
+app.util.dateFormat = function (date) {
+    return date.substring(0, 10).replace(/-/g, '/');
+};
+
+app.util.convertToSlug = function (text) {
+    return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+};
 
 app.core.bindEvents = function () {
     var eventsFunc = function (obj) {
@@ -77,10 +86,6 @@ app.core.clearView = function () {
     $('#search-results .table tr').children(':not(th)').parent().remove();
 };
 
-app.methods.convertToSlug = function (text) {
-    return text.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-};
-
 app.methods.search = function (query) {
     $('#seriesTitle').val(query);
     var callback = function (error, response) {
@@ -95,7 +100,7 @@ app.methods.search = function (query) {
             } else {
                 var result = response.data;
                 for (var i = 0; i < result.length; i++) {
-                    $('#search-results .table').append('<tr class="table-row app-control" data-event="table-row-click" data-param="' + result[i].id + '/' + app.methods.convertToSlug(result[i].seriesName) + '">' +
+                    $('#search-results .table').append('<tr class="table-row app-control" data-event="table-row-click" data-param="' + result[i].id + '/' + app.util.convertToSlug(result[i].seriesName) + '">' +
                         '<td>' + result[i].id + '</td>' +
                         '<td>' + result[i].seriesName + '</td>' +
                         '<td>' + result[i].status + '</td>' +
@@ -131,16 +136,25 @@ app.methods.seriesDetail = function (id, callback) {
                 }
             });
             $('#seasons-list-header').html('');
+            $('#seasons-list-episodes').html('');
             $.each(response.seasons, function (key, season) {
-                $('#seasons-list-header').append('<li><a href="#tab' + season.number + 'default" data-toggle="tab">' + season.webCode + '</a></li>')
-                $('#seasons-list-episodes').append('<div class="tab-pane fade" id="tab' + season.number + 'default"></div>');
-                $('#tab' + season.number + 'default').append('<ul>');
-                $.each(season.episodes, function (k, episode) {
+                if (season != null) {
+                    $('#seasons-list-header').append('<li><a href="#tab' + season.number + 'default" data-toggle="tab">' + season.webCode + '</a></li>')
+                    $('#seasons-list-episodes').append('<div class="tab-pane fade" id="tab' + season.number + 'default"></div>');
                     $('#tab' + season.number + 'default').append(
-                        '<li>' + episode.webCode + ' - ' + episode.title + '</li>'
+                        '<table class="table table-condensed"><thead><tr><th>Next?</th><th>Title</th><th>Aired Date</th></tr></thead><tbody>'
                     );
-                });
-                $('#tab' + season.number + 'default').append('</ul>');
+                    $.each(season.episodes, function (k, episode) {
+                        $('#tab' + season.number + 'default table').append(
+                            '<tr>' +
+                            '<td><input type="radio" name="current-episode" value="' + season.number + '-' + episode.number + '"></td>' +
+                            '<td>' + episode.webCode + ' - ' + episode.title + '</td>' +
+                            '<td>' + app.util.dateFormat(episode.airedAt) + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                    $('#tab' + season.number + 'default').append('</tbody></table>');
+                }
             });
             $('#seasons-list-header').children(':first').addClass('active');
             $('#seasons-list-episodes').children(':first').addClass('in active');

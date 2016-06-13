@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/regisdiogo/lord-of-the-series#readme",
   "dependencies": {
+    "async": "^2.0.0-rc.6",
     "body-parser": "~1.15.0",
     "connect-mongo": "^1.1.0",
     "express": "^4.13.4",

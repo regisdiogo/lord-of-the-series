@@ -35,7 +35,7 @@ router.get('/:language/:id/seasons', function(req, res) {
     series.getEpisodesSummary(req.params.id, req.params.language, callback);
 });
 
-router.get('/:language/:id/season/:seasonNumber', function(req, res) {
+router.get('/:language/:id/seasons/:page', function(req, res) {
     var callback = function(error, response) {
         if (error) {
             res.status(500).json(response);
@@ -43,7 +43,7 @@ router.get('/:language/:id/season/:seasonNumber', function(req, res) {
             res.json(response);
         }
     }
-    series.getSeasonDetail(req.params.id, req.params.seasonNumber, req.params.language, callback);
+    series.getEpisodesSummary(req.params.id, req.params.page, req.params.language, callback);
 });
 
 module.exports = router;
