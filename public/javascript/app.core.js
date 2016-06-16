@@ -145,11 +145,16 @@ app.methods.seriesDetail = function (id, callback) {
                         '<table class="table table-condensed"><thead><tr><th>Next?</th><th>Title</th><th>Aired Date</th></tr></thead><tbody>'
                     );
                     $.each(season.episodes, function (k, episode) {
+                        var label = '<span class="label label-success">Released</span>';
+                        if (!episode.released)
+                            label = '<span class="label label-warning">Not Released</span>';
                         $('#tab' + season.number + 'default table').append(
                             '<tr>' +
-                            '<td><input type="radio" name="current-episode" value="' + season.number + '-' + episode.number + '"></td>' +
+                            '<td><input type="radio" name="current-episode" id="current-episode" value="' + season.number + '-' + episode.number + '"></td>' +
                             '<td>' + episode.webCode + ' - ' + episode.title + '</td>' +
-                            '<td>' + app.util.dateFormat(episode.airedAt) + '</td>' +
+                            '<td>' + app.util.dateFormat(episode.airedAt) +
+                            '&nbsp;' + label +
+                            '</td>' +
                             '</tr>'
                         );
                     });
@@ -226,7 +231,28 @@ app.methods.signup = function () {
 
 app.methods.addSeries = function (seriesId) {
     console.debug('app.methods.addSeries');
-    console.log(params);
+    $('#series-detail-message').removeClass('alert-danger').removeClass('alert-info').hide();
+    if ($('#current-episode:checked').val() === undefined) {
+        $('#series-detail-message').addClass('alert-danger').show().html('Please select what is the next episode you are going to watch');
+        $('html, body').animate({ scrollTop: 0 }, 500);
+    } else {
+        var aux = $('#current-episode:checked').val().split('-');
+        var content = {
+            seriesId: seriesId,
+            seasonNumber: aux[0],
+            episodeNumber: aux[1]
+        };
+        var callback = function (error, data) {
+            if (error) {
+                $('#series-detail-message').addClass('alert-danger').show().html(error.message);
+                $('html, body').animate({ scrollTop: 0 }, 500);
+            } else {
+                $('#series-detail-message').addClass('alert-info').show().html('Successfully added to your watch list');
+                $('html, body').animate({ scrollTop: 0 }, 500);
+            }
+        };
+        app.core.doPost('watchList/add', content, callback);
+    }
 };
 
 app.events = {
@@ -331,6 +357,7 @@ app.render = function (url) {
         '#series': function () {
             app.methods.getCurrentUser(function () { });
             var callback = function () {
+                $('#series-detail-message').html('').hide();
                 $('.main-area').hide();
                 $('#series-detail').show();
                 app.core.locked = false;

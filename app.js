@@ -48,6 +48,7 @@ app.all('*', function (req, res, next) {
 app.use('/', require.main.require('./routes/main'));
 app.use('/series', require.main.require('./routes/series'));
 app.use('/user', require.main.require('./routes/user'));
+app.use('/watchList', require.main.require('./routes/watchList'));
 
 //404
 app.use(function (req, res, next) {
