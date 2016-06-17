@@ -92,9 +92,14 @@
     <fieldset>
         <legend class="seriesName"></legend>
         <form class="form-horizontal app-control" role="form">
-            <div class="alert col-lg-offset-1 col-lg-8" id="series-detail-message" role="alert" style="display:none;"></div>
             <div class="form-group">
-                <div class="col-lg-offset-1 col-lg-10">
+                <div class="alert col-lg-offset-1 col-lg-8" id="series-detail-message" role="alert" style="display:none;"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-1">
+                    <span class="glyphicon glyphicon-star pull-right added-series" aria-hidden="true"></span>
+                </div>
+                <div class="col-lg-9">
                     <img class="banner">
                 </div>
             </div>
@@ -138,7 +143,8 @@
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <button type="button" class="btn btn-default app-control" data-event="series-go-back">Go back</button>
-                    <button type="button" class="btn btn-primary app-control" data-event="add-series">Add to your collection</button>
+                    <button type="button" id="add-series" class="btn btn-primary app-control" data-event="add-series">Add to your collection</button>
+                    <button type="button" id="remove-series" class="btn btn-warning app-control" data-event="remove-series">Remove from your collection</button>
                 </div>
             </div>
         </form>

@@ -4,13 +4,16 @@ var router = express.Router();
 
 router.get('/', function (req, res) {
     var callback = function (error, data) {
-        if (error) {
+        if (error || data === null) {
             res.status(401).json(error);
         } else {
             res.json(data);
         }
     };
-    user.findById(req.session.user, callback);
+    if (req.session.user !== undefined)
+        user.findByEmail(req.session.user.email, callback);
+    else
+        callback(true);
 });
 
 router.post('/login', function (req, res) {

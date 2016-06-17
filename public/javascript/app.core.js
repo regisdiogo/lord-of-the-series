@@ -82,6 +82,22 @@ app.core.doGet = function (url, callback) {
     });
 };
 
+app.core.doRemove = function (url, callback) {
+    $('button').button('loading');
+    $.ajax({
+        type: 'DELETE',
+        url: url
+
+    }).done(function (data) {
+        callback(false, data);
+        $('button').button('reset');
+
+    }).error(function (data) {
+        callback(data);
+        $('button').button('reset');
+    });
+};
+
 app.core.clearView = function () {
     $('#search-results .table tr').children(':not(th)').parent().remove();
 };
@@ -163,6 +179,15 @@ app.methods.seriesDetail = function (id, callback) {
             });
             $('#seasons-list-header').children(':first').addClass('active');
             $('#seasons-list-episodes').children(':first').addClass('in active');
+            $('#add-series').show();
+            $('#remove-series,.added-series').hide();
+            for (var p = 0; p < app.params.user.watchList.length; p++) {
+                if (app.params.user.watchList[p].seriesId == id) {
+                    $('#add-series').hide();
+                    $('#remove-series,.added-series').show();
+                    break;
+                }
+            };
             callback();
         }
     }
@@ -182,6 +207,7 @@ app.methods.getCurrentUser = function (callback) {
             }
         } else {
             app.params.user = data;
+            $('#language-selector').show();
             callback();
         }
     };
@@ -247,12 +273,32 @@ app.methods.addSeries = function (seriesId) {
                 $('#series-detail-message').addClass('alert-danger').show().html(error.message);
                 $('html, body').animate({ scrollTop: 0 }, 500);
             } else {
+                app.params.user = data;
+                $('#add-series').hide();
+                $('#remove-series,.added-series').show();
                 $('#series-detail-message').addClass('alert-info').show().html('Successfully added to your watch list');
                 $('html, body').animate({ scrollTop: 0 }, 500);
             }
         };
-        app.core.doPost('watchList/add', content, callback);
+        app.core.doPost('watchList', content, callback);
     }
+};
+
+app.methods.removeSeries = function (seriesId) {
+    console.debug('app.methods.removeSeries');
+    var callback = function (error, data) {
+        if (error) {
+            $('#series-detail-message').addClass('alert-danger').show().html(error.message);
+            $('html, body').animate({ scrollTop: 0 }, 500);
+        } else {
+            app.params.user = data;
+            $('#remove-series,.added-series').hide();
+            $('#add-series').show();
+            $('#series-detail-message').addClass('alert-info').show().html('Successfully removed from your watch list');
+            $('html, body').animate({ scrollTop: 0 }, 500);
+        }
+    };
+    app.core.doRemove('watchList/' + seriesId, callback);
 };
 
 app.events = {
@@ -297,6 +343,11 @@ app.events = {
     'add-series': function () {
         console.debug('app.events.add-series');
         app.methods.addSeries(decodeURI(window.location.hash).split('/')[1]);
+    },
+
+    'remove-series': function () {
+        console.debug('app.events.remove-series');
+        app.methods.removeSeries(decodeURI(window.location.hash).split('/')[1]);
     },
 
     'series-go-back': function () {

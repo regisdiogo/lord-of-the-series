@@ -20,6 +20,7 @@ body {
 #language-selector {
     float: right;
     padding-top: 13px;
+    display: none;
 }
 
 #language-selector a,
@@ -39,4 +40,14 @@ a:active {
 
 .table-row:hover {
     cursor: pointer;
+}
+
+#remove-series {
+    display: none;
+}
+
+.added-series {
+    display: none;
+    font-size: 1.8em;
+    margin-top: 60px;
 }
