@@ -10,6 +10,8 @@ app.params.title = 'Lord of The Series';
 app.core.locked = false;
 
 app.util.dateFormat = function (date) {
+    if (date == null)
+        return '';
     return date.substring(0, 10).replace(/-/g, '/');
 };
 
@@ -153,7 +155,37 @@ app.methods.seriesDetail = function (id, callback) {
             });
             $('#seasons-list-header').html('');
             $('#seasons-list-episodes').html('');
-            $.each(response.seasons, function (key, season) {
+            var seasons = [];
+            response.episodes.forEach(function (episode) {
+                var k = 0;
+                var exists = false;
+                for (; k < seasons.length; k++) {
+                    if (seasons[k].number == episode.seasonNumber) {
+                        exists = true;
+                        break;
+                    }
+                }
+                var e = {
+                    number: episode.episodeNumber,
+                    webCode: episode.episodeWebCode,
+                    title: episode.title,
+                    airedAt: episode.airedAt,
+                    released: episode.released
+                };
+                if (!exists) {
+                    seasons.push({
+                        number: episode.seasonNumber,
+                        webCode: episode.seasonWebCode,
+                        episodes: [e]
+                    });
+                } else {
+                    seasons[k].episodes.push(e);
+                }
+            });
+
+            console.log(seasons);
+
+            $.each(seasons, function (key, season) {
                 if (season != null) {
                     $('#seasons-list-header').append('<li><a href="#tab' + season.number + 'default" data-toggle="tab">' + season.webCode + '</a></li>')
                     $('#seasons-list-episodes').append('<div class="tab-pane fade" id="tab' + season.number + 'default"></div>');
