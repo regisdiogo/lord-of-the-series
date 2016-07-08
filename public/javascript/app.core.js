@@ -339,6 +339,11 @@ app.events = {
         window.location = '#';
     },
 
+    'show-watchlist': function () {
+        console.debug('app.events.show-watchlist');
+        window.location = '#watchlist';
+    },
+
     'show-login': function () {
         console.debug('app.events.show-login');
         window.location = '#login';
@@ -385,6 +390,15 @@ app.events = {
     'series-go-back': function () {
         console.debug('app.events.series-go-back');
         window.location = '#search-series/q=' + encodeURIComponent(decodeURI(window.location.hash).split('q=')[1]);
+    },
+
+    'open-download-list': function (param) {
+        if ($('.download-item-' + param).is(':visible')) {
+            $('.download-list').hide();
+        } else {
+            $('.download-list').hide();
+            $('.download-item-' + param).show();
+        }
     }
 };
 
@@ -420,12 +434,28 @@ app.render = function (url) {
             $('head title').html('Signup - ' + app.params.title);
         },
 
+        '#watchlist': function () {
+            app.core.clearView();
+            var callback = function (error, data) {
+                if (!error) {
+                    console.log(data);
+                    $('head title').html('Watchlist - ' + app.params.title);
+                    $('.main-area').hide();
+                    $('.top-menu').children().removeClass('active').children('[data-event="show-watchlist"]').parent().addClass('active');
+                    $('#watchlist-page').show();
+                }
+            };
+            app.methods.getCurrentUser(function () { });
+            app.core.doGet('/watchlist/', callback);
+        },
+
         '#home': function () {
             $('#search-results').hide();
             app.core.clearView();
             var callback = function () {
                 $('.form-group').find('input').val('');
                 $('.main-area').hide();
+                $('.top-menu').children().removeClass('active').children('[data-event="main-title"]').parent().addClass('active');
                 $('#home-page').show().find('input').first().focus();
             };
             app.methods.getCurrentUser(callback);

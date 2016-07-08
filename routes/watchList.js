@@ -26,4 +26,16 @@ router.delete('/:seriesId', function (req, res) {
     watchList.remove(req.session.user, req.params.seriesId, callback);
 });
 
+router.get('/', function (req, res) {
+    var callback = function (error, data) {
+        if (error) {
+            res.status(400).json(data);
+        } else {
+            req.session.user = data;
+            res.json(data);
+        }
+    }
+    watchList.list(req.session.user, callback);
+});
+
 module.exports = router;
