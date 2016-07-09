@@ -31,7 +31,6 @@ router.get('/', function (req, res) {
         if (error) {
             res.status(400).json(data);
         } else {
-            req.session.user = data;
             res.json(data);
         }
     }

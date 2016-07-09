@@ -399,6 +399,10 @@ app.events = {
             $('.download-list').hide();
             $('.download-item-' + param).show();
         }
+    },
+
+    'download-link': function (param) {
+        console.log(param);
     }
 };
 
@@ -439,10 +443,59 @@ app.render = function (url) {
             var callback = function (error, data) {
                 if (!error) {
                     console.log(data);
+                    $('#watchlist-result').html('');
+                    if (data !== undefined && data.length > 0) {
+                        var content = '';
+                        for (var i = 0; i < data.length; i++) {
+                            content += '<div class="row">';
+                            content += '<div class="col-lg-5">';
+                            content += '<a class="thumbnail hvr-float-shadow well well-sm app-control" data-event="open-download-list" data-param="' + i + '">';
+                            content += '<img src="http://thetvdb.com/banners/' + data[i].banner + '">';
+                            content += '</a>';
+                            content += '</div>';
+                            content += '<div class="col-lg-7">';
+                            content += '<div class="list-group download-list thumbnail well well-sm download-item-' + i + '">';
+                            content += '<div class="list-group-item">';
+                            for (var j = 0; j < data[i].episodes.length; j++) {
+                                var p1080 = {
+                                    seriesId: data[i].seriesId,
+                                    seasonNumber: data[i].episodes[j].seasonNumber,
+                                    episodeNumber: data[i].episodes[j].episodeNumber,
+                                    format: '1080p'
+                                };
+                                var p720 = {
+                                    seriesId: data[i].seriesId,
+                                    seasonNumber: data[i].episodes[j].seasonNumber,
+                                    episodeNumber: data[i].episodes[j].episodeNumber,
+                                    format: '720p'
+                                };
+                                content += ' <!---->';
+                                content += '<div class="row">';
+                                content += '<div class="col-lg-6">';
+                                content += '<a class="app-control" data-event="download-link" data-param="' + JSON.stringify(p1080).replace(/"/g, "\'") + '">';
+                                content += '<span class="glyphicon glyphicon-download pull-right"></span>S06E10 1080p';
+                                content += '</a>';
+                                content += '</div>';
+                                content += '<div class="col-lg-6">';
+                                content += '<a class="app-control" data-event="download-link" data-param="' + JSON.stringify(p720).replace(/"/g, "\'") + '">';
+                                content += '<span class="glyphicon glyphicon-download pull-right"></span>S06E10 720p';
+                                content += '</a>';
+                                content += '</div>';
+                                content += '</div>';
+                                content += '<!---->';
+                            }
+                            content += '</div>';
+                            content += '</div>';
+                            content += '</div>';
+                            content += '</div>';
+                        }
+                        $('#watchlist-result').html(content);
+                    }
                     $('head title').html('Watchlist - ' + app.params.title);
                     $('.main-area').hide();
                     $('.top-menu').children().removeClass('active').children('[data-event="show-watchlist"]').parent().addClass('active');
                     $('#watchlist-page').show();
+                    app.core.bindEvents();
                 }
             };
             app.methods.getCurrentUser(function () { });
