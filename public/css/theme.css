@@ -59,6 +59,7 @@ a:active {
 .top-menu {
     text-shadow: #9d9d9d;
 }
+
 /* Float Shadow */
 .hvr-float-shadow {
   display: inline-block;
@@ -105,14 +106,26 @@ a:active {
   /* move the element down by 5px (it will stay in place because it's attached to the element that also moves up 5px) */
 }
 
-.download-list {
-    display: none;
-}
-
 .download-not-available {
     -webkit-filter: grayscale(100%);
        -moz-filter: grayscale(100%);
          -o-filter: grayscale(100%);
         -ms-filter: grayscale(100%);
             filter: grayscale(100%); 
+}
+
+.series-title { 
+    margin-top: 5px;
+}
+
+hr {
+    margin-bottom: 15px;
+}
+ 
+.watchitem {
+    
+}
+
+.watchitem-eol {
+    clear: both;
 }

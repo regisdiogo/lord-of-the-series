@@ -9,6 +9,30 @@ app.params.title = 'Lord of The Series';
 
 app.core.locked = false;
 
+app.util.equalizeThumbnails = function () {
+    for (var i = 0; i < $('#watchlist-result').children('.watch-first-column').length; i++) {
+        if (i > 0) {
+            var height = $('#watchlist-result').children('.watch-first-column:eq(' + (i) + ')').height();
+            var offset = $('#watchlist-result').children('.watch-first-column:eq(' + (i - 1) + ')').offset();
+            $('#watchlist-result').children('.watch-first-column:eq(' + i + ')').offset({ top: offset.top + height + 30 });
+        }
+    }
+    /*for (var i = 0; i < $('#watchlist-result').children('.watch-second-column').length; i++) {
+        if (i > 0) {
+            var height = $('#watchlist-result').children('.watch-second-column:eq(' + (i) + ')').height();
+            var offset = $('#watchlist-result').children('.watch-second-column:eq(' + (i - 1) + ')').offset();
+            $('#watchlist-result').children('.watch-second-column:eq(' + i + ')').offset({ top: offset.top + height + 40 });
+        }
+    }
+    for (var i = 0; i < $('#watchlist-result').children('.watch-third-column').length; i++) {
+        if (i > 0) {
+            var height = $('#watchlist-result').children('.watch-third-column:eq(' + (i) + ')').height();
+            var offset = $('#watchlist-result').children('.watch-third-column:eq(' + (i - 1) + ')').offset();
+            $('#watchlist-result').children('.watch-third-column:eq(' + i + ')').offset({ top: offset.top + height + 40 });
+        }
+    }*/
+};
+
 app.util.dateFormat = function (date) {
     if (date == null)
         return '';
@@ -446,16 +470,23 @@ app.render = function (url) {
                     $('#watchlist-result').html('');
                     if (data !== undefined && data.length > 0) {
                         var content = '';
+                        var col = 1;
                         for (var i = 0; i < data.length; i++) {
-                            content += '<div class="row">';
-                            content += '<div class="col-lg-5">';
-                            content += '<a class="thumbnail hvr-float-shadow well well-sm app-control" data-event="open-download-list" data-param="' + i + '">';
-                            content += '<img src="http://thetvdb.com/banners/' + data[i].banner + '">';
-                            content += '</a>';
-                            content += '</div>';
-                            content += '<div class="col-lg-7">';
-                            content += '<div class="list-group download-list thumbnail well well-sm download-item-' + i + '">';
-                            content += '<div class="list-group-item">';
+                            var eol = '';
+                            if (col % 2 == 0) {
+                                eol = ' watch-second-column';
+                            } else if (col % 3 == 0) {
+                                eol = ' watch-third-column';
+                            } else {
+                                eol = ' watchitem-eol watch-first-column';
+                            }
+                            if (++col > 3)
+                                col = 1;
+
+                            content += '<div class="col-md-4 col-xs-12 watchitem' + eol + '">';
+                            content += '<div class="thumbnail hvr-float-shadow">';
+                            content += '<img src="http://thetvdb.com/banners/' + data[i].banner + '" alt="' + data[i].seriesName + '" />';
+                            content += '<div class="caption">';
                             for (var j = 0; j < data[i].episodes.length; j++) {
                                 var p1080 = {
                                     seriesId: data[i].seriesId,
@@ -469,22 +500,16 @@ app.render = function (url) {
                                     episodeNumber: data[i].episodes[j].episodeNumber,
                                     format: '720p'
                                 };
-                                content += ' <!---->';
-                                content += '<div class="row">';
-                                content += '<div class="col-lg-6">';
-                                content += '<a class="app-control" data-event="download-link" data-param="' + JSON.stringify(p1080).replace(/"/g, "\'") + '">';
-                                content += '<span class="glyphicon glyphicon-download pull-right"></span>S06E10 1080p';
-                                content += '</a>';
-                                content += '</div>';
-                                content += '<div class="col-lg-6">';
-                                content += '<a class="app-control" data-event="download-link" data-param="' + JSON.stringify(p720).replace(/"/g, "\'") + '">';
-                                content += '<span class="glyphicon glyphicon-download pull-right"></span>S06E10 720p';
-                                content += '</a>';
-                                content += '</div>';
-                                content += '</div>';
-                                content += '<!---->';
+                                content += '<p class="pull-right">';
+                                content += '<a href="javascript:console.log(' + JSON.stringify(p720).replace(/"/g, "\'") + ')"  class="btn btn-default btn-sm" role="button">720p</a>';
+                                content += '<a href="javascript:console.log(' + JSON.stringify(p1080).replace(/"/g, "\'") + ')" class="btn btn-default  btn-sm" role="button">1080p</a>';
+                                content += '</p>';
+                                content += '<h4 class="series-title"><span class="label label-default">' + data[i].episodes[j].seasonWebCode + data[i].episodes[j].episodeWebCode + '</span></h4>';
+
+                                if (j < data[i].episodes.length - 1) {
+                                    content += '<hr/>';
+                                }
                             }
-                            content += '</div>';
                             content += '</div>';
                             content += '</div>';
                             content += '</div>';
@@ -496,6 +521,7 @@ app.render = function (url) {
                     $('.top-menu').children().removeClass('active').children('[data-event="show-watchlist"]').parent().addClass('active');
                     $('#watchlist-page').show();
                     app.core.bindEvents();
+                    app.util.equalizeThumbnails();
                 }
             };
             app.methods.getCurrentUser(function () { });
