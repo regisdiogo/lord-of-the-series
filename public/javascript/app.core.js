@@ -10,27 +10,18 @@ app.params.title = 'Lord of The Series';
 app.core.locked = false;
 
 app.util.equalizeThumbnails = function () {
-    for (var i = 0; i < $('#watchlist-result').children('.watch-first-column').length; i++) {
-        if (i > 0) {
-            var height = $('#watchlist-result').children('.watch-first-column:eq(' + (i) + ')').height();
-            var offset = $('#watchlist-result').children('.watch-first-column:eq(' + (i - 1) + ')').offset();
-            $('#watchlist-result').children('.watch-first-column:eq(' + i + ')').offset({ top: offset.top + height + 30 });
-        }
-    }
-    /*for (var i = 0; i < $('#watchlist-result').children('.watch-second-column').length; i++) {
-        if (i > 0) {
-            var height = $('#watchlist-result').children('.watch-second-column:eq(' + (i) + ')').height();
-            var offset = $('#watchlist-result').children('.watch-second-column:eq(' + (i - 1) + ')').offset();
-            $('#watchlist-result').children('.watch-second-column:eq(' + i + ')').offset({ top: offset.top + height + 40 });
-        }
-    }
-    for (var i = 0; i < $('#watchlist-result').children('.watch-third-column').length; i++) {
-        if (i > 0) {
-            var height = $('#watchlist-result').children('.watch-third-column:eq(' + (i) + ')').height();
-            var offset = $('#watchlist-result').children('.watch-third-column:eq(' + (i - 1) + ')').offset();
-            $('#watchlist-result').children('.watch-third-column:eq(' + i + ')').offset({ top: offset.top + height + 40 });
-        }
-    }*/
+    var columns = ['first', 'second', 'third'];
+    setTimeout(function () {
+        columns.forEach(function (item) {
+            var position = 0;
+            for (var i = 1; i < $('#watchlist-result').children('.watch-' + item + '-column').length; i++) {
+                var height = $('#watchlist-result').children('.watch-' + item + '-column:eq(' + (i - 1) + ')').height();
+                var offset = $('#watchlist-result').children('.watch-' + item + '-column:eq(' + (i - 1) + ')').offset();
+                position = offset.top + height;
+                $('#watchlist-result').children('.watch-' + item + '-column:eq(' + i + ')').offset({ top: position });
+            }
+        })
+    }, 100);
 };
 
 app.util.dateFormat = function (date) {
@@ -485,7 +476,9 @@ app.render = function (url) {
 
                             content += '<div class="col-md-4 col-xs-12 watchitem' + eol + '">';
                             content += '<div class="thumbnail hvr-float-shadow">';
-                            content += '<img src="http://thetvdb.com/banners/' + data[i].banner + '" alt="' + data[i].seriesName + '" />';
+                            content += '<a class="app-control" data-event="table-row-click" data-param="' + data[i].seriesId + '/' + app.util.convertToSlug(data[i].seriesName) + '" >';
+                            content += '<img src="http://thetvdb.com/banners/' + data[i].banner + '" alt="' + data[i].seriesName + '" height="65" width="350" />';
+                            content += '</a>';
                             content += '<div class="caption">';
                             for (var j = 0; j < data[i].episodes.length; j++) {
                                 var p1080 = {

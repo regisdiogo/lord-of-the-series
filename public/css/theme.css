@@ -121,11 +121,11 @@ a:active {
 hr {
     margin-bottom: 15px;
 }
- 
-.watchitem {
-    
-}
 
 .watchitem-eol {
     clear: both;
+}
+
+#watchlist-result .thumbnail img {
+    cursor: pointer;
 }
